@@ -2,13 +2,12 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Autoplay YouTube Video Loop</title>
+  <title>Autoplay YouTube Video Loop with Auto-Unmute on Click</title>
   <style>
     body {
       margin: 0;
       background: #000;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
@@ -17,19 +16,6 @@
       width: 80%;
       height: 450px;
       border: none;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #ff0000;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    button:hover {
-      background-color: #cc0000;
     }
   </style>
 </head>
@@ -41,11 +27,8 @@
     allowfullscreen>
   </iframe>
 
-  <!-- Button to unmute -->
-  <button onclick="unmuteVideo()">🔊 Turn On Sound</button>
-
   <script>
-    // YouTube Player API
+    // Load YouTube Player API
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -53,14 +36,19 @@
 
     var player;
     function onYouTubeIframeAPIReady() {
-      player = new YT.Player('ytplayer');
+      player = new YT.Player('ytplayer', {
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
     }
 
-    function unmuteVideo() {
-      if (player) {
+    function onPlayerReady(event) {
+      // Unmute automatically on first click anywhere
+      document.body.addEventListener('click', function () {
         player.unMute();
         player.setVolume(100);
-      }
+      }, { once: true });
     }
   </script>
 </body>
