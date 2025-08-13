@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>YouTube Autoplay Loop with Small Unmute Icon</title>
+  <title>YouTube Autoplay Loop with Stylish Mute/Unmute Button</title>
   <style>
     body {
       margin: 0;
@@ -17,39 +17,45 @@
       width: 80%;
       height: 450px;
       border: none;
+      pointer-events: none; /* prevents pausing when clicking video */
     }
-    #unmuteIcon {
+    #muteToggle {
       position: absolute;
       bottom: 20px;
       right: 20px;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.5);
       border: none;
       border-radius: 50%;
-      padding: 10px;
+      padding: 12px;
       cursor: pointer;
       z-index: 10;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: background 0.3s ease;
     }
-    #unmuteIcon img {
-      width: 24px;
-      height: 24px;
-      filter: invert(1); /* makes icon white */
+    #muteToggle:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
-    #unmuteIcon:hover {
-      background: rgba(255, 0, 0, 0.8);
+    #muteToggle svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
     }
   </style>
 </head>
 <body>
   <!-- YouTube Video -->
-  <iframe id="ytplayer" 
+  <iframe id="ytplayer"
     src="https://www.youtube.com/embed/NCguOHU8qzw?autoplay=1&mute=1&loop=1&playlist=NCguOHU8qzw&enablejsapi=1"
     allow="autoplay; encrypted-media"
     allowfullscreen>
   </iframe>
 
-  <!-- Small Unmute Icon -->
-  <button id="unmuteIcon" title="Unmute Video">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Mute_Icon.svg" alt="Unmute">
+  <!-- Always Visible Stylish Button -->
+  <button id="muteToggle" title="Toggle Sound">
+    <!-- Start muted -->
+    <svg id="muteIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M16.5 12a4.5 4.5 0 0 0-4.5-4.5V5a7 7 0 0 1 0 14v-2.5a4.5 4.5 0 0 0 4.5-4.5zm-4.5 1H9l-4 4V7l4 4h3v2z"/>
+    </svg>
   </button>
 
   <script>
@@ -60,6 +66,8 @@
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
     var player;
+    var isMuted = true;
+
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('ytplayer', {
         events: {
@@ -68,13 +76,22 @@
       });
     }
 
-    function onPlayerReady(event) {
-      document.getElementById('unmuteIcon').addEventListener('click', function () {
-        player.unMute();
-        player.setVolume(100);
-        player.playVideo(); // Keeps video playing
-        this.style.display = 'none'; // Hide icon after unmute
-      }, { once: true });
+    function onPlayerReady() {
+      document.getElementById('muteToggle').addEventListener('click', function () {
+        if (isMuted) {
+          player.unMute();
+          player.setVolume(100);
+          document.getElementById('muteIcon').innerHTML =
+            '<path d="M3 9v6h4l5 5V4L7 9H3zm13.59 3l2.3 2.29-1.42 1.42L15 13.41l-2.29 2.3-1.42-1.42L13.59 12l-2.3-2.29 1.42-1.42L15 10.59l2.29-2.3 1.42 1.42L16.41 12z"/>';
+          isMuted = false;
+        } else {
+          player.mute();
+          document.getElementById('muteIcon').innerHTML =
+            '<path d="M16.5 12a4.5 4.5 0 0 0-4.5-4.5V5a7 7 0 0 1 0 14v-2.5a4.5 4.5 0 0 0 4.5-4.5zm-4.5 1H9l-4 4V7l4 4h3v2z"/>';
+          isMuted = true;
+        }
+        player.playVideo(); // keeps it playing
+      });
     }
   </script>
 </body>
