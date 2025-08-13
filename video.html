@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>SOAR 2025 KPMB homepage</title>
+  <title>Fullscreen Looping YouTube Video with Unmute Icon</title>
   <style>
     html, body {
       margin: 0;
@@ -18,7 +18,7 @@
       width: 100vw;
       height: 100vh;
       border: none;
-      pointer-events: none;
+      pointer-events: none; /* Prevent YouTube from catching clicks */
     }
     .overlay {
       position: fixed;
@@ -41,6 +41,7 @@
       align-items: center;
       justify-content: center;
       transition: background 0.3s ease;
+      user-select: none;
     }
     .unmute-icon:hover {
       background: rgba(0, 0, 0, 0.8);
@@ -49,6 +50,7 @@
       fill: white;
       width: 50px;
       height: 50px;
+      pointer-events: none; /* Prevent SVG from catching clicks */
     }
   </style>
 </head>
@@ -85,7 +87,9 @@
     }
 
     function onPlayerReady(event) {
-      document.getElementById('clickToUnmute').addEventListener('click', function () {
+      document.getElementById('clickToUnmute').addEventListener('click', function (e) {
+        e.stopPropagation(); // Prevent click from affecting iframe
+        e.preventDefault();
         player.unMute();
         player.setVolume(100);
         this.style.display = 'none'; // Hide overlay after click
