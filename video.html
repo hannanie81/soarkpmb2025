@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Autoplay YouTube Video</title>
+  <title>Autoplay YouTube Video Loop</title>
   <style>
     body {
       margin: 0;
@@ -34,9 +34,9 @@
   </style>
 </head>
 <body>
-  <!-- Autoplay muted video -->
+  <!-- Autoplay muted, loop enabled -->
   <iframe id="ytplayer" 
-    src="https://www.youtube.com/embed/NCguOHU8qzw?autoplay=1&mute=1&enablejsapi=1"
+    src="https://www.youtube.com/embed/NCguOHU8qzw?autoplay=1&mute=1&loop=1&playlist=NCguOHU8qzw&enablejsapi=1"
     allow="autoplay; encrypted-media"
     allowfullscreen>
   </iframe>
@@ -54,3 +54,14 @@
     var player;
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('ytplayer');
+    }
+
+    function unmuteVideo() {
+      if (player) {
+        player.unMute();
+        player.setVolume(100);
+      }
+    }
+  </script>
+</body>
+</html>
